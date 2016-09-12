@@ -20,10 +20,11 @@ public:
     void scrollVertically(int numSteps);
 
     void mousePressEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
     void wheelEvent(QWheelEvent *e);
 
     QTimer timer;
-    int x, y;
+    int x, y, posX1, posY1;
     float zoom, angle, xPan, yPan;
 };
 

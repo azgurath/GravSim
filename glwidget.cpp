@@ -5,10 +5,14 @@
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
-    zoom = 5.0;
+    zoom = 1.0;
     angle = 0.0;
     xPan = 0.0;
     yPan = 0.0;
+    x = 0;
+    y = 0;
+    posX1 = 0;
+    posY1 = 0;
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     timer.start(16);
 }
@@ -28,7 +32,7 @@ void GLWidget::paintGL(){
 
     glColor3f(1, 0.6, 0);
     glPushMatrix();
-        glTranslatef(xPan, yPan, zoom);
+        glTranslatef(x, y, zoom);
         glRotatef(angle, 1, 1, 1);
         glutSolidTeapot(1);
     glPopMatrix();
@@ -50,8 +54,20 @@ void GLWidget::scrollVertically(int numSteps)
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *e){
-    xPan += 1;
+    posX1 = e->x();
+    posY1 = e->y();
+    qDebug() << posX1 << "," << posY1 << endl;
 }
+
+void GLWidget::mouseMoveEvent(QMouseEvent *e){
+    x = posX1 - e->x();
+    x *= -1;
+    y = posY1 - e->y();
+    x /= 100;
+    y /= 100;
+    qDebug() << x << "," << y << endl;
+}
+
 
 void GLWidget::wheelEvent(QWheelEvent *e){
     int numDegrees = e->delta() / 8;
