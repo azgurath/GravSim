@@ -14,7 +14,10 @@ GLWidget::GLWidget(QWidget *parent) :
     posX1 = 0;
     posY1 = 0;
 
-    particle = new(Particle);
+    particle[0] = new(Particle);
+    particle[1] = new(Particle);
+    particle[1]->speed = 0.0;
+    particle[1]->mass = 100;
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     timer.start(16);
@@ -25,23 +28,27 @@ void GLWidget::initializeGL(){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
 
 }
 
 void GLWidget::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    angle += 0.5;
-    particle->x += particle->speed * particle->angX;
-    particle->y += particle->speed * particle->angY;
-    particle->z += particle->speed * particle->angZ;
-
-    glColor3f(1, 0.6, 0);
-    glPushMatrix();
-        glTranslatef(x+particle->x, y+particle->y, zoom+particle->z);
-        glRotatef(angle, 1, 1, 1);
-        glutSolidSphere(1.0, 50, 50);
-    glPopMatrix();
+    for(int i = 0; i < NUM_P; i++)
+    {
+        particle[i]->x += particle[i]->speed * particle[i]->angX;
+        particle[i]->y += particle[i]->speed * particle[i]->angY;
+        if(particle[i]->mass == 1)
+            glColor3f(1, 0.6, 0);
+        if(particle[i]->mass == 100)
+            glColor3f(0, 0, 0.6);
+        glPushMatrix();
+            glTranslatef(x+particle[i]->x, y+particle[i]->y, zoom+particle[i]->z);
+            //glRotatef(angle, 1, 1, 1);
+            glutSolidSphere(1.0, 10, 5);
+        glPopMatrix();
+    }
 }
 
 void GLWidget::resizeGL(int w, int h){

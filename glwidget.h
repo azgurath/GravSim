@@ -8,6 +8,8 @@
 #include <QDebug>
 #include "particle.h"
 
+const int NUM_P = 2;
+
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
@@ -27,7 +29,7 @@ public:
     QTimer timer;
     int posX1, posY1;
     float x, y, zoom, angle, xPan, yPan;
-    Particle* particle;
+    Particle *particle[NUM_P];
 };
 
 #endif // GLWIDGET_H
