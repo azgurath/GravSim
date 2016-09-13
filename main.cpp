@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <GL/glut.h>
+#include <GL/glu.h>
 
 int main(int argc, char *argv[])
 {
-    glutInit(&argc, argv);
+    //glutInit(&argc, argv);
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

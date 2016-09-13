@@ -1,5 +1,5 @@
 #include "glwidget.h"
-#include <GL/glut.h>
+#include <GL/glu.h>
 #include <QDebug>
 
 GLWidget::GLWidget(QWidget *parent) :
@@ -35,6 +35,8 @@ void GLWidget::initializeGL(){
 void GLWidget::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    angle += 0.5;
+
     for(int i = 0; i < NUM_P; i++)
     {
         particle[i]->x += particle[i]->speed * particle[i]->angX;
@@ -45,8 +47,43 @@ void GLWidget::paintGL(){
             glColor3f(0, 0, 0.6);
         glPushMatrix();
             glTranslatef(x+particle[i]->x, y+particle[i]->y, zoom+particle[i]->z);
-            //glRotatef(angle, 1, 1, 1);
-            glutSolidSphere(1.0, 10, 5);
+            glRotatef(angle, 1, 1, 1);
+            glBegin(GL_POLYGON);
+                glVertex3f( -0.5, -0.5, -0.5);
+                glVertex3f( -0.5, 0.5, -0.5);
+                glVertex3f( 0.5, 0.5, -0.5);
+                glVertex3f( 0.5, -0.5, -0.5); //back face
+            glEnd();
+            glBegin(GL_POLYGON);
+                glVertex3f( -0.5, -0.5, 0.5);
+                glVertex3f( -0.5, 0.5, 0.5);
+                glVertex3f( 0.5, 0.5, 0.5);
+                glVertex3f( 0.5, -0.5, 0.5); //front gace
+            glEnd();
+            glBegin(GL_POLYGON);
+                glVertex3f( -0.5, -0.5, -0.5);
+                glVertex3f( -0.5, 0.5, -0.5);
+                glVertex3f( -0.5, 0.5, 0.5);
+                glVertex3f( -0.5, -0.5, 0.5); //left face
+            glEnd();
+            glBegin(GL_POLYGON);
+                glVertex3f( 0.5, 0.5, -0.5);
+                glVertex3f( 0.5, -0.5, -0.5);
+                glVertex3f( 0.5, -0.5, 0.5);
+                glVertex3f( 0.5, 0.5, 0.5); //right face
+            glEnd();
+            glBegin(GL_POLYGON);
+                glVertex3f( -0.5, 0.5, -0.5);
+                glVertex3f( 0.5, 0.5, -0.5);
+                glVertex3f( 0.5, 0.5, 0.5);
+                glVertex3f( -0.5, 0.5, 0.5); //top face
+                glEnd();
+            glBegin(GL_POLYGON);
+                glVertex3f( -0.5, -0.5, -0.5);
+                glVertex3f( 0.5, -0.5, -0.5);
+                glVertex3f( 0.5, -0.5, 0.5);
+                glVertex3f( -0.5, -0.5, 0.5); //bottom face
+            glEnd();
         glPopMatrix();
     }
 }
