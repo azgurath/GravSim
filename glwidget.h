@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <QDebug>
+#include "particle.h"
 
 class GLWidget : public QGLWidget
 {
@@ -24,8 +25,9 @@ public:
     void wheelEvent(QWheelEvent *e);
 
     QTimer timer;
-    int x, y, posX1, posY1;
-    float zoom, angle, xPan, yPan;
+    int posX1, posY1;
+    float x, y, zoom, angle, xPan, yPan;
+    Particle* particle;
 };
 
 #endif // GLWIDGET_H

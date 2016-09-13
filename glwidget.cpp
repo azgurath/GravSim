@@ -13,6 +13,9 @@ GLWidget::GLWidget(QWidget *parent) :
     y = 0;
     posX1 = 0;
     posY1 = 0;
+
+    particle = new(Particle);
+
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     timer.start(16);
 }
@@ -29,12 +32,15 @@ void GLWidget::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     angle += 0.5;
+    particle->x += particle->speed * particle->angX;
+    particle->y += particle->speed * particle->angY;
+    particle->z += particle->speed * particle->angZ;
 
     glColor3f(1, 0.6, 0);
     glPushMatrix();
-        glTranslatef(x, y, zoom);
+        glTranslatef(x+particle->x, y+particle->y, zoom+particle->z);
         glRotatef(angle, 1, 1, 1);
-        glutSolidTeapot(1);
+        glutSolidSphere(1.0, 50, 50);
     glPopMatrix();
 }
 
@@ -54,18 +60,13 @@ void GLWidget::scrollVertically(int numSteps)
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *e){
-    posX1 = e->x();
-    posY1 = e->y();
-    qDebug() << posX1 << "," << posY1 << endl;
+    posX1 = e->x()-(x*50);
+    posY1 = e->y()+(y*50);
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *e){
-    x = posX1 - e->x();
-    x *= -1;
-    y = posY1 - e->y();
-    x /= 100;
-    y /= 100;
-    qDebug() << x << "," << y << endl;
+    x = (float)(posX1 - e->x())/-50;
+    y = (float)(posY1 - e->y())/50;
 }
 
 
