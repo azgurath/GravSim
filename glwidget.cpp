@@ -1,12 +1,15 @@
 #include "glwidget.h"
+#include "gravity.h"
 #include <GL/glu.h>
 #include <QDebug>
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
+    setFocusPolicy(Qt::StrongFocus);
     zoom = 1.0;
-    angle = 0.0;
+    angleX = 0.0;
+    angleY = 0.0;
     xPan = 0.0;
     yPan = 0.0;
     x = 0;
@@ -14,10 +17,7 @@ GLWidget::GLWidget(QWidget *parent) :
     posX1 = 0;
     posY1 = 0;
 
-    particle[0] = new(Particle);
-    particle[1] = new(Particle);
-    particle[1]->speed = 0.0;
-    particle[1]->mass = 100;
+    gravity = new(Gravity);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     timer.start(16);
@@ -35,19 +35,14 @@ void GLWidget::initializeGL(){
 void GLWidget::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    angle += 0.5;
-
     for(int i = 0; i < NUM_P; i++)
     {
-        particle[i]->x += particle[i]->speed * particle[i]->angX;
-        particle[i]->y += particle[i]->speed * particle[i]->angY;
-        if(particle[i]->mass == 1)
-            glColor3f(1, 0.6, 0);
-        if(particle[i]->mass == 100)
-            glColor3f(0, 0, 0.6);
+        gravity->update();
         glPushMatrix();
-            glTranslatef(x+particle[i]->x, y+particle[i]->y, zoom+particle[i]->z);
-            glRotatef(angle, 1, 1, 1);
+        glRotatef(angleY, 0, 1, 0);
+        glRotatef(angleX, 1, 0, 0);
+        glPushMatrix();
+            glTranslatef(x+gravity->x(i), y+gravity->y(i), zoom+gravity->z(i));
             glBegin(GL_POLYGON);
                 glVertex3f( -0.5, -0.5, -0.5);
                 glVertex3f( -0.5, 0.5, -0.5);
@@ -85,6 +80,7 @@ void GLWidget::paintGL(){
                 glVertex3f( -0.5, -0.5, 0.5); //bottom face
             glEnd();
         glPopMatrix();
+        glPopMatrix();
     }
 }
 
@@ -112,6 +108,19 @@ void GLWidget::mouseMoveEvent(QMouseEvent *e){
     x = (float)(posX1 - e->x())/-50;
     y = (float)(posY1 - e->y())/50;
 }
+
+void GLWidget::keyPressEvent(QKeyEvent *e){
+    if(e->key() == Qt::Key_Up)
+        angleX += 2;
+    if(e->key() == Qt::Key_Down)
+        angleX -= 2;
+
+    if(e->key() == Qt::Key_Left)
+        angleY -= 2;
+    if(e->key() == Qt::Key_Right)
+        angleY += 2;
+}
+
 
 
 void GLWidget::wheelEvent(QWheelEvent *e){

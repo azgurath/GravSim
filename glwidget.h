@@ -7,8 +7,7 @@
 #include <QEvent>
 #include <QDebug>
 #include "particle.h"
-
-const int NUM_P = 2;
+#include "gravity.h"
 
 class GLWidget : public QGLWidget
 {
@@ -26,10 +25,13 @@ public:
     void mouseMoveEvent(QMouseEvent *e);
     void wheelEvent(QWheelEvent *e);
 
+    void keyPressEvent(QKeyEvent *e);
+
     QTimer timer;
     int posX1, posY1;
-    float x, y, zoom, angle, xPan, yPan;
-    Particle *particle[NUM_P];
+    float x, y, zoom, angleX, angleY, xPan, yPan;
+
+    Gravity *gravity;
 };
 
 #endif // GLWIDGET_H

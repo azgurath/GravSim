@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
-    particle.cpp
+    particle.cpp \
+    gravity.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
-    particle.h
+    particle.h \
+    gravity.h
 
 FORMS    += mainwindow.ui
 
