@@ -1,3 +1,5 @@
+#include <math.h>
+#include <QDebug>
 #include "gravity.h"
 
 Gravity::Gravity(){
@@ -21,8 +23,23 @@ void Gravity::remove(){
 }
 
 void Gravity::update(){
+    float acceleration;
+    float distance;
     for(int i = 0; i < NUM_P; i++)
     {
+        for(int j = 0; j < NUM_P; j++)
+        {
+            if(i != j)
+            {
+                distance = pow(particle[i]->x - particle[j]->x, 2);
+                distance += pow(particle[i]->x - particle[j]->x, 2);
+                distance += pow(particle[i]->x - particle[j]->x, 2);
+                distance = sqrt(distance);
+                acceleration = (particle[i]->mass)/distance;
+                qDebug() << acceleration;
+                //particle[j]->speed += acceleration/60;
+            }
+        }
         particle[i]->x += particle[i]->speed * particle[i]->angX;
         particle[i]->y += particle[i]->speed * particle[i]->angY;
         particle[i]->z += particle[i]->speed * particle[i]->angZ;
