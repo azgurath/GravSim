@@ -9,9 +9,9 @@ Gravity::Gravity(){
     }
     particle[0]->mass = 100;
 
-    particle[1]->angX = 0.7;
-    particle[1]->angY = 0.5;
-    particle[1]->angZ = 0.3;
+    particle[1]->angX = 0.007;
+    particle[1]->angY = 0.005;
+    particle[1]->angZ = 0.003;
     particle[1]->speed = 0.01;
 }
 
@@ -40,9 +40,9 @@ void Gravity::update(){
                 //particle[j]->speed += acceleration/60;
             }
         }
-        particle[i]->x += particle[i]->speed * particle[i]->angX;
-        particle[i]->y += particle[i]->speed * particle[i]->angY;
-        particle[i]->z += particle[i]->speed * particle[i]->angZ;
+        particle[i]->x += particle[i]->angX;
+        particle[i]->y += particle[i]->angY;
+        particle[i]->z += particle[i]->angZ;
     }
 }
 

@@ -7,10 +7,10 @@ class Particle
 public:
     Particle();
 
-    float x, y, z;
-    float angX, angY, angZ;
-    float speed;
-    float mass;
+    float x, y, z; // position
+    float angX, angY, angZ; // velocity vector
+    float speed; // total speed
+    float mass; // mass
 };
 
 #endif // PARTICLE_H
