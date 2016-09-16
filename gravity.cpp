@@ -23,7 +23,7 @@ void Gravity::remove(){
 }
 
 void Gravity::update(){
-    float acceleration;
+    float acceleration, speed;
     float distance;
     for(int i = 0; i < NUM_P; i++)
     {
@@ -35,7 +35,8 @@ void Gravity::update(){
                 distance += pow(particle[i]->x - particle[j]->x, 2);
                 distance += pow(particle[i]->x - particle[j]->x, 2);
                 distance = sqrt(distance);
-                acceleration = (particle[i]->mass)/distance;
+                acceleration = (particle[i]->mass)/(distance*distance);
+                speed = acceleration / 60.0;
                 qDebug() << acceleration;
                 //particle[j]->speed += acceleration/60;
             }
