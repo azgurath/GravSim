@@ -9,7 +9,6 @@ public:
 
     float x, y, z; // position
     float angX, angY, angZ; // velocity vector
-    float speed; // total speed
     float mass; // mass
 };
 

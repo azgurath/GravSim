@@ -41,6 +41,14 @@ void GLWidget::paintGL(){
         glPushMatrix();
         glRotatef(angleY, 0, 1, 0);
         glRotatef(angleX, 1, 0, 0);
+        if(gravity->color(i) > 0.1)
+            glColor3f(1.0*gravity->color(i), 0, 0);
+        else
+            if(gravity->color(i) > 0.001)
+                glColor3f(0, 100*gravity->color(i), 0);
+            else
+                glColor3f(0, 0, 10000*gravity->color(i));
+
         glPushMatrix();
             glTranslatef(x+gravity->x(i), y+gravity->y(i), zoom+gravity->z(i));
             glBegin(GL_POLYGON);
@@ -88,10 +96,10 @@ void GLWidget::resizeGL(int w, int h){
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (float)w/h, 1, 100.0);
+    gluPerspective(40.5, (float)w/h, 1, 10000.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 100, 0, 0, 0, 0, 1, 0);
 }
 
 void GLWidget::scrollVertically(int numSteps)
@@ -100,13 +108,13 @@ void GLWidget::scrollVertically(int numSteps)
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *e){
-    posX1 = e->x()-(x*50);
-    posY1 = e->y()+(y*50);
+    posX1 = e->x()-(x*10);
+    posY1 = e->y()+(y*10);
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *e){
-    x = (float)(posX1 - e->x())/-50;
-    y = (float)(posY1 - e->y())/50;
+    x = (float)(posX1 - e->x())/-10;
+    y = (float)(posY1 - e->y())/10;
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *e){
