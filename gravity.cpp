@@ -13,16 +13,17 @@ Gravity::Gravity(){
     particle[1]->y = 20;
     particle[1]->z = 0;
     particle[1]->angX = 0.05;
-    particle[1]->angY = -0.05;
+    particle[1]->angY = 0.05;
     particle[1]->angZ = 0.0;
 
-    /*particle[2]->x = -1;
-    particle[2]->y = -2;
-    particle[2]->z = 0.5;
-    particle[2]->angX = 0.000;
-    particle[2]->angY = 0.000;
-    particle[2]->angZ = -0.007;
-    particle[2]->mass = 1;*/
+    particle[2]->x = -50;
+    particle[2]->y = 0;
+    particle[2]->z = 0;
+    particle[2]->angX = 0.0;
+    particle[2]->angY = 0.05;
+    particle[2]->angZ = 0.0;
+    particle[2]->mass = 100;
+
     maxMass = 100;
 }
 

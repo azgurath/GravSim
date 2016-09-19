@@ -3,7 +3,7 @@
 
 #include "particle.h"
 
-const int NUM_P = 2;
+const int NUM_P = 3;
 
 class Gravity
 {
