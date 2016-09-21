@@ -20,7 +20,7 @@ Gravity::Gravity(){
     particle[2]->y = 0;
     particle[2]->z = 0;
     particle[2]->angX = 0.0;
-    particle[2]->angY = 0.05;
+    particle[2]->angY = 0.03;
     particle[2]->angZ = 0.0;
     particle[2]->mass = 100;
 
@@ -54,21 +54,33 @@ void Gravity::update(){
                 distance = sqrt(distance);
                 acceleration = 0.1 * (particle[i]->mass)/(distance*distance);
                 speed = acceleration / 60.0; // multiple by time for speed.
-                // Compute speed vector
+                // Compute velocity vector
                 diffX = particle[i]->x - particle[j]->x;
                 diffY = particle[i]->y - particle[j]->y;
                 diffZ = particle[i]->z - particle[j]->z;
                 length = sqrt((diffX*diffX) + (diffY*diffY) + (diffZ*diffZ));
 
                 // They collided, make them in the same place and velocity
-                if(length < 1)
+                if(distance < 1)
                 {
-                    particle[j]->x = particle[i]->x;
-                    particle[j]->y = particle[i]->y;
-                    particle[j]->z = particle[i]->z;
-                    particle[j]->angX = particle[i]->angX;
-                    particle[j]->angY = particle[i]->angY;
-                    particle[j]->angZ = particle[i]->angZ;
+                    if(particle[i]->mass < particle[j]->mass)
+                    {
+                        particle[i]->x = particle[j]->x;
+                        particle[i]->y = particle[j]->y;
+                        particle[i]->z = particle[j]->z;
+                        particle[i]->angX = particle[j]->angX;
+                        particle[i]->angY = particle[j]->angY;
+                        particle[i]->angZ = particle[j]->angZ;
+                    }
+                    else
+                    {
+                        particle[j]->x = particle[i]->x;
+                        particle[j]->y = particle[i]->y;
+                        particle[j]->z = particle[i]->z;
+                        particle[j]->angX = particle[i]->angX;
+                        particle[j]->angY = particle[i]->angY;
+                        particle[j]->angZ = particle[i]->angZ;
+                    }
                 }
                 // They didn't collide, update velocity vector
                 else

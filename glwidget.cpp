@@ -104,17 +104,23 @@ void GLWidget::resizeGL(int w, int h){
 
 void GLWidget::scrollVertically(int numSteps)
 {
-    zoom += (float)numSteps;
+    zoom += (float)numSteps*3;
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *e){
-    posX1 = e->x()-(x*10);
-    posY1 = e->y()+(y*10);
+    if(e->button() == Qt::RightButton)
+    {
+        posX1 = e->x()-(x*10);
+        posY1 = e->y()+(y*10);
+    }
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *e){
-    x = (float)(posX1 - e->x())/-10;
-    y = (float)(posY1 - e->y())/10;
+    if(e->buttons() == Qt::RightButton)
+    {
+        x = (float)(posX1 - e->x())/-10;
+        y = (float)(posY1 - e->y())/10;
+    }
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *e){
