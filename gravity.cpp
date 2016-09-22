@@ -9,20 +9,20 @@ Gravity::Gravity(){
     particleCount = 1;
 
     Particle *tmpPart = new(Particle);
-    tmpPart->x = 20;
-    tmpPart->y = 20;
-    tmpPart->z = 0;
+    tmpPart->x = 10;
+    tmpPart->y = 10;
+    tmpPart->z = 30;
     tmpPart->angX = 0.05;
     tmpPart->angY = 0.05;
-    tmpPart->angZ = 0.0;
+    tmpPart->angZ = -0.03;
     add(tmpPart);
 
     tmpPart = new(Particle);
-    tmpPart->x = -50;
+    tmpPart->x = 100;
     tmpPart->y = 0;
     tmpPart->z = 0;
     tmpPart->angX = 0.0;
-    tmpPart->angY = 0.03;
+    tmpPart->angY = -0.03;
     tmpPart->angZ = 0.0;
     tmpPart->mass = 100;
     tmpPart->next = 0;
@@ -97,7 +97,7 @@ void Gravity::update(){
                 distance += pow(tmpPart1->y - tmpPart2->y, 2);
                 distance += pow(tmpPart1->z - tmpPart2->z, 2);
                 distance = sqrt(distance);
-                acceleration = 0.1 * (tmpPart1->mass)/(distance*distance);
+                acceleration = 0.2 * (tmpPart1->mass)/(distance*distance);
                 speed = acceleration / 60.0; // multiple by time for speed.
                 // Compute velocity vector
                 diffX = tmpPart1->x - tmpPart2->x;
@@ -155,7 +155,6 @@ void Gravity::update(){
 }
 
 void Gravity::collide(Particle *part1, Particle *part2){
-
     // Compute how much it's velocity changes
     float newX = part1->mass * part1->angX;
     float newY = part1->mass * part1->angY;

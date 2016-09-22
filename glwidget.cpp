@@ -38,57 +38,61 @@ void GLWidget::paintGL(){
     for(int i = 0; i < gravity->partNum(); i++)
     {
         gravity->update();
-        glPushMatrix();
-        glRotatef(angleY, 0, 1, 0);
-        glRotatef(angleX, 1, 0, 0);
-        if(gravity->color(i) > 0.1)
-            glColor3f(1.0*gravity->color(i), 0, 0);
-        else
-            if(gravity->color(i) > 0.001)
-                glColor3f(0, 100*gravity->color(i), 0);
+        // Make sure we aren't trying to draw a particle that got deleted.
+        if(i < gravity->partNum())
+        {
+            glPushMatrix();
+            glRotatef(angleY, 0, 1, 0);
+            glRotatef(angleX, 1, 0, 0);
+            if(gravity->color(i) > 0.1)
+                glColor3f(1.0*gravity->color(i), 0, 0);
             else
-                glColor3f(0, 0, 10000*gravity->color(i));
+                if(gravity->color(i) > 0.001)
+                    glColor3f(0, 100*gravity->color(i), 0);
+                else
+                    glColor3f(0, 0, 10000*gravity->color(i));
 
-        glPushMatrix();
-            glTranslatef(x+gravity->x(i), y+gravity->y(i), zoom+gravity->z(i));
-            glBegin(GL_POLYGON);
-                glVertex3f( -0.5, -0.5, -0.5);
-                glVertex3f( -0.5, 0.5, -0.5);
-                glVertex3f( 0.5, 0.5, -0.5);
-                glVertex3f( 0.5, -0.5, -0.5); //back face
-            glEnd();
-            glBegin(GL_POLYGON);
-                glVertex3f( -0.5, -0.5, 0.5);
-                glVertex3f( -0.5, 0.5, 0.5);
-                glVertex3f( 0.5, 0.5, 0.5);
-                glVertex3f( 0.5, -0.5, 0.5); //front gace
-            glEnd();
-            glBegin(GL_POLYGON);
-                glVertex3f( -0.5, -0.5, -0.5);
-                glVertex3f( -0.5, 0.5, -0.5);
-                glVertex3f( -0.5, 0.5, 0.5);
-                glVertex3f( -0.5, -0.5, 0.5); //left face
-            glEnd();
-            glBegin(GL_POLYGON);
-                glVertex3f( 0.5, 0.5, -0.5);
-                glVertex3f( 0.5, -0.5, -0.5);
-                glVertex3f( 0.5, -0.5, 0.5);
-                glVertex3f( 0.5, 0.5, 0.5); //right face
-            glEnd();
-            glBegin(GL_POLYGON);
-                glVertex3f( -0.5, 0.5, -0.5);
-                glVertex3f( 0.5, 0.5, -0.5);
-                glVertex3f( 0.5, 0.5, 0.5);
-                glVertex3f( -0.5, 0.5, 0.5); //top face
+            glPushMatrix();
+                glTranslatef(x+gravity->x(i), y+gravity->y(i), zoom+gravity->z(i));
+                glBegin(GL_POLYGON);
+                    glVertex3f( -0.5, -0.5, -0.5);
+                    glVertex3f( -0.5, 0.5, -0.5);
+                    glVertex3f( 0.5, 0.5, -0.5);
+                    glVertex3f( 0.5, -0.5, -0.5); //back face
                 glEnd();
-            glBegin(GL_POLYGON);
-                glVertex3f( -0.5, -0.5, -0.5);
-                glVertex3f( 0.5, -0.5, -0.5);
-                glVertex3f( 0.5, -0.5, 0.5);
-                glVertex3f( -0.5, -0.5, 0.5); //bottom face
-            glEnd();
-        glPopMatrix();
-        glPopMatrix();
+                glBegin(GL_POLYGON);
+                    glVertex3f( -0.5, -0.5, 0.5);
+                    glVertex3f( -0.5, 0.5, 0.5);
+                    glVertex3f( 0.5, 0.5, 0.5);
+                    glVertex3f( 0.5, -0.5, 0.5); //front gace
+                glEnd();
+                glBegin(GL_POLYGON);
+                    glVertex3f( -0.5, -0.5, -0.5);
+                    glVertex3f( -0.5, 0.5, -0.5);
+                    glVertex3f( -0.5, 0.5, 0.5);
+                    glVertex3f( -0.5, -0.5, 0.5); //left face
+                glEnd();
+                glBegin(GL_POLYGON);
+                    glVertex3f( 0.5, 0.5, -0.5);
+                    glVertex3f( 0.5, -0.5, -0.5);
+                    glVertex3f( 0.5, -0.5, 0.5);
+                    glVertex3f( 0.5, 0.5, 0.5); //right face
+                glEnd();
+                glBegin(GL_POLYGON);
+                    glVertex3f( -0.5, 0.5, -0.5);
+                    glVertex3f( 0.5, 0.5, -0.5);
+                    glVertex3f( 0.5, 0.5, 0.5);
+                    glVertex3f( -0.5, 0.5, 0.5); //top face
+                    glEnd();
+                glBegin(GL_POLYGON);
+                    glVertex3f( -0.5, -0.5, -0.5);
+                    glVertex3f( 0.5, -0.5, -0.5);
+                    glVertex3f( 0.5, -0.5, 0.5);
+                    glVertex3f( -0.5, -0.5, 0.5); //bottom face
+                glEnd();
+            glPopMatrix();
+            glPopMatrix();
+        }
     }
 }
 
@@ -99,7 +103,7 @@ void GLWidget::resizeGL(int w, int h){
     gluPerspective(40.5, (float)w/h, 1, 10000.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0, 100, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 200, 0, 0, 0, 0, 1, 0);
 }
 
 void GLWidget::scrollVertically(int numSteps)

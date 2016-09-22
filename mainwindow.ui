@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>419</width>
-    <height>332</height>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>419</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -61,7 +61,13 @@
   </widget>
   <action name="action_Exit">
    <property name="text">
-    <string>&amp;Exit</string>
+    <string>&amp;Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
  </widget>
