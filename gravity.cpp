@@ -22,7 +22,7 @@ Gravity::Gravity(){
     tmpPart->y = 0;
     tmpPart->z = 0;
     tmpPart->angX = 0.0;
-    tmpPart->angY = 0.05;
+    tmpPart->angY = 0.03;
     tmpPart->angZ = 0.0;
     tmpPart->mass = 100;
     tmpPart->next = 0;
@@ -111,8 +111,7 @@ void Gravity::update(){
                     // Find particle with less mass
                     if(tmpPart1->mass < tmpPart2->mass)
                     {
-                        // Add it's mass to the other particle
-                        tmpPart2->mass += tmpPart1->mass;
+                        collide(tmpPart1, tmpPart2);
                         // Delete the particle
                         Particle *tmp = tmpPart1->next;
                         remove(tmpPart1);
@@ -120,8 +119,7 @@ void Gravity::update(){
                     }
                     else
                     {
-                        // Add it's mass to the other particle
-                        tmpPart1->mass += tmpPart2->mass;
+                        collide(tmpPart2, tmpPart1);
                         // Delete the particle
                         Particle *tmp = tmpPart2->next;
                         remove(tmpPart2);
@@ -154,6 +152,25 @@ void Gravity::update(){
         // move to next particle
         tmpPart1 = tmpPart1->next;
     }
+}
+
+void Gravity::collide(Particle *part1, Particle *part2){
+
+    // Compute how much it's velocity changes
+    float newX = part1->mass * part1->angX;
+    float newY = part1->mass * part1->angY;
+    float newZ = part1->mass * part1->angZ;
+    newX += part2->mass * part2->angX;
+    newY += part2->mass * part2->angY;
+    newZ += part2->mass * part2->angZ;
+    newX /= part1->mass + part2->mass;
+    newY /= part1->mass + part2->mass;
+    newZ /= part1->mass + part2->mass;
+    part2->angX = newX;
+    part2->angY = newY;
+    part2->angZ = newZ;
+    // Add it's mass to the other particle
+    part2->mass += part1->mass;
 }
 
 float Gravity::x(int pos){

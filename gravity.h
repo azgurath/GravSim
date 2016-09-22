@@ -16,6 +16,7 @@ public:
     float x(int pos);
     float y(int pos);
     float z(int pos);
+    void collide(Particle *part1, Particle *part2);
 
 private:
     Particle *particle;
