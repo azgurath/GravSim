@@ -9,5 +9,7 @@ Particle::Particle()
     angY = 0.0;
     angZ = 0.0;
     mass = 1.0;
+
+    next = 0;
 }
 

@@ -3,35 +3,77 @@
 #include "gravity.h"
 
 Gravity::Gravity(){
-    for(int i = 0; i < NUM_P; i++)
-    {
-        particle[i] = new(Particle);
-    }
-    particle[0]->mass = 100;
+    particle = new(Particle);
 
-    particle[1]->x = 20;
-    particle[1]->y = 20;
-    particle[1]->z = 0;
-    particle[1]->angX = 0.05;
-    particle[1]->angY = 0.05;
-    particle[1]->angZ = 0.0;
+    particle->mass = 100;
+    particleCount = 1;
 
-    particle[2]->x = -50;
-    particle[2]->y = 0;
-    particle[2]->z = 0;
-    particle[2]->angX = 0.0;
-    particle[2]->angY = 0.03;
-    particle[2]->angZ = 0.0;
-    particle[2]->mass = 100;
+    Particle *tmpPart = new(Particle);
+    tmpPart->x = 20;
+    tmpPart->y = 20;
+    tmpPart->z = 0;
+    tmpPart->angX = 0.05;
+    tmpPart->angY = 0.05;
+    tmpPart->angZ = 0.0;
+    add(tmpPart);
+
+    tmpPart = new(Particle);
+    tmpPart->x = -50;
+    tmpPart->y = 0;
+    tmpPart->z = 0;
+    tmpPart->angX = 0.0;
+    tmpPart->angY = 0.05;
+    tmpPart->angZ = 0.0;
+    tmpPart->mass = 100;
+    tmpPart->next = 0;
+    add(tmpPart);
 
     maxMass = 100;
 }
 
-void Gravity::remove(){
-    for(int i = 0; i < NUM_P; i++)
+int Gravity::partNum(){
+    return particleCount;
+}
+
+void Gravity::add(Particle *part){
+    Particle *tmp = particle;
+    while(tmp->next != NULL)
     {
-        delete(particle[i]);
+        tmp = tmp->next;
     }
+    tmp->next = part;
+    part->next = NULL;
+    particleCount++;
+}
+
+void Gravity::remove(Particle *part){
+    Particle *prev = NULL;
+    Particle *curr = particle;
+    Particle *tmp = NULL;
+    while(curr != NULL)
+    {
+        if(curr == part)
+        {
+            // delete from front of list
+            if(prev == NULL)
+            {
+                tmp = particle->next;
+                delete particle;
+                particle = part;
+                part->next = tmp;
+            }
+            // delete from middle or end of list
+            else
+            {
+                tmp = curr->next;
+                delete curr;
+                prev->next = tmp;
+            }
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+    particleCount--;
 }
 
 void Gravity::update(){
@@ -39,47 +81,51 @@ void Gravity::update(){
     float diffX, diffY, diffZ, length; // velocity vector. God help us.
     float distance;
     // Walk through all particles
-    for(int i = 0; i < NUM_P; i++)
+    Particle *tmpPart1 = particle;
+    Particle *tmpPart2 = particle;
+    while(tmpPart1 != 0)
     {
+        tmpPart2 = particle;
         // For each particle, walk through each other particle
-        for(int j = 0; j < NUM_P; j++)
+        while(tmpPart2 !=0)
         {
             // Don't have the particle move due to it's own gravity
-            if(i != j)
+            if(tmpPart1 != tmpPart2)
             {
                 // Solve for acceleration due to gravity
-                distance = pow(particle[i]->x - particle[j]->x, 2);
-                distance += pow(particle[i]->y - particle[j]->y, 2);
-                distance += pow(particle[i]->z - particle[j]->z, 2);
+                distance = pow(tmpPart1->x - tmpPart2->x, 2);
+                distance += pow(tmpPart1->y - tmpPart2->y, 2);
+                distance += pow(tmpPart1->z - tmpPart2->z, 2);
                 distance = sqrt(distance);
-                acceleration = 0.1 * (particle[i]->mass)/(distance*distance);
+                acceleration = 0.1 * (tmpPart1->mass)/(distance*distance);
                 speed = acceleration / 60.0; // multiple by time for speed.
                 // Compute velocity vector
-                diffX = particle[i]->x - particle[j]->x;
-                diffY = particle[i]->y - particle[j]->y;
-                diffZ = particle[i]->z - particle[j]->z;
+                diffX = tmpPart1->x - tmpPart2->x;
+                diffY = tmpPart1->y - tmpPart2->y;
+                diffZ = tmpPart1->z - tmpPart2->z;
                 length = sqrt((diffX*diffX) + (diffY*diffY) + (diffZ*diffZ));
 
-                // They collided, make them in the same place and velocity
+                // They collided, remove particle with less mass
                 if(distance < 1)
                 {
-                    if(particle[i]->mass < particle[j]->mass)
+                    // Find particle with less mass
+                    if(tmpPart1->mass < tmpPart2->mass)
                     {
-                        particle[i]->x = particle[j]->x;
-                        particle[i]->y = particle[j]->y;
-                        particle[i]->z = particle[j]->z;
-                        particle[i]->angX = particle[j]->angX;
-                        particle[i]->angY = particle[j]->angY;
-                        particle[i]->angZ = particle[j]->angZ;
+                        // Add it's mass to the other particle
+                        tmpPart2->mass += tmpPart1->mass;
+                        // Delete the particle
+                        Particle *tmp = tmpPart1->next;
+                        remove(tmpPart1);
+                        tmpPart1 = tmp;
                     }
                     else
                     {
-                        particle[j]->x = particle[i]->x;
-                        particle[j]->y = particle[i]->y;
-                        particle[j]->z = particle[i]->z;
-                        particle[j]->angX = particle[i]->angX;
-                        particle[j]->angY = particle[i]->angY;
-                        particle[j]->angZ = particle[i]->angZ;
+                        // Add it's mass to the other particle
+                        tmpPart1->mass += tmpPart2->mass;
+                        // Delete the particle
+                        Particle *tmp = tmpPart2->next;
+                        remove(tmpPart2);
+                        tmpPart2 = tmp;
                     }
                 }
                 // They didn't collide, update velocity vector
@@ -92,32 +138,48 @@ void Gravity::update(){
                     diffY *= speed;
                     diffZ *= speed;
                     // Add speed vector from gravity to current velocity vector.
-                    particle[j]->angX += diffX;
-                    particle[j]->angY += diffY;
-                    particle[j]->angZ += diffZ;
+                    tmpPart2->angX += diffX;
+                    tmpPart2->angY += diffY;
+                    tmpPart2->angZ += diffZ;
                 }
             }
+            // move to next particle
+            tmpPart2 = tmpPart2->next;
         }
         // Move the particle according to it's final velocity vector,
         //     after being updated by the gravity of all other particles.
-        particle[i]->x += particle[i]->angX;
-        particle[i]->y += particle[i]->angY;
-        particle[i]->z += particle[i]->angZ;
+        tmpPart1->x += tmpPart1->angX;
+        tmpPart1->y += tmpPart1->angY;
+        tmpPart1->z += tmpPart1->angZ;
+        // move to next particle
+        tmpPart1 = tmpPart1->next;
     }
 }
 
 float Gravity::x(int pos){
-    return particle[pos]->x;
+    Particle *part = particle;
+    for(int i = 0; i < pos; i++)
+        part = part->next;
+    return part->x;
 }
 
 float Gravity::y(int pos){
-    return particle[pos]->y;
+    Particle *part = particle;
+    for(int i = 0; i < pos; i++)
+        part = part->next;
+    return part->y;
 }
 
 float Gravity::z(int pos){
-    return particle[pos]->z;
+    Particle *part = particle;
+    for(int i = 0; i < pos; i++)
+        part = part->next;
+    return part->z;
 }
 
 float Gravity::color(int pos){
-    return particle[pos]->mass / maxMass;
+    Particle *part = particle;
+    for(int i = 0; i < pos; i++)
+        part = part->next;
+    return part->mass / maxMass;
 }

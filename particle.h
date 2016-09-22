@@ -10,6 +10,8 @@ public:
     float x, y, z; // position
     float angX, angY, angZ; // velocity vector
     float mass; // mass
+
+    Particle *next;
 };
 
 #endif // PARTICLE_H

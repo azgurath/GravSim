@@ -35,7 +35,7 @@ void GLWidget::initializeGL(){
 void GLWidget::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for(int i = 0; i < NUM_P; i++)
+    for(int i = 0; i < gravity->partNum(); i++)
     {
         gravity->update();
         glPushMatrix();

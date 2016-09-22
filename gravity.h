@@ -3,23 +3,24 @@
 
 #include "particle.h"
 
-const int NUM_P = 3;
-
 class Gravity
 {
 public:
     Gravity();
 
-    void remove();
+    void remove(Particle *part);
     void update();
+    void add(Particle *part);
+    int partNum();
     float color(int pos);
     float x(int pos);
     float y(int pos);
     float z(int pos);
 
 private:
-    Particle *particle[NUM_P];
+    Particle *particle;
     float maxMass;
+    int particleCount;
 };
 
 #endif // GRAVITY_H
