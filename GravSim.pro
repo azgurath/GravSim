@@ -21,7 +21,8 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     glwidget.h \
     particle.h \
-    gravity.h
+    gravity.h \
+    globals.h
 
 FORMS    += mainwindow.ui
 

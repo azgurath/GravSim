@@ -1,7 +1,12 @@
 #include "glwidget.h"
 #include "gravity.h"
+//#include "globals.h"
 #include <GL/glu.h>
 #include <QDebug>
+
+extern bool CONTINUE;
+extern bool RESTART;
+extern bool PRESET;
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent)
@@ -17,7 +22,7 @@ GLWidget::GLWidget(QWidget *parent) :
     posX1 = 0;
     posY1 = 0;
 
-    gravity = new(Gravity);
+    gravity = new Gravity(PRESET);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     timer.start(16);
@@ -33,11 +38,23 @@ void GLWidget::initializeGL(){
 }
 
 void GLWidget::paintGL(){
+    if(RESTART)
+    {
+        delete gravity;
+        gravity = new Gravity(PRESET);
+        RESTART = false;
+        CONTINUE = false;
+        zoom = 1.0;
+        x = 0;
+        y = 0;
+    }
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(int i = 0; i < gravity->partNum(); i++)
     {
-        gravity->update();
+        if(CONTINUE)
+            gravity->update();
         // Make sure we aren't trying to draw a particle that got deleted.
         if(i < gravity->partNum())
         {
@@ -103,7 +120,7 @@ void GLWidget::resizeGL(int w, int h){
     gluPerspective(40.5, (float)w/h, 1, 10000.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0, 200, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 100, 0, 0, 0, 0, 1, 0);
 }
 
 void GLWidget::scrollVertically(int numSteps)

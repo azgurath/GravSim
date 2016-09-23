@@ -2,33 +2,66 @@
 #include <QDebug>
 #include "gravity.h"
 
-Gravity::Gravity(){
+extern bool REMOVE;
+extern float GRAVITY_CONST;
+
+Gravity::Gravity(int preset){
     particle = new(Particle);
 
-    particle->mass = 100;
-    particleCount = 1;
+    if(preset == 2)
+    {
+        particle->mass = 100;
+        particleCount = 1;
 
-    Particle *tmpPart = new(Particle);
-    tmpPart->x = 10;
-    tmpPart->y = 10;
-    tmpPart->z = 30;
-    tmpPart->angX = 0.05;
-    tmpPart->angY = 0.05;
-    tmpPart->angZ = -0.03;
-    add(tmpPart);
+        Particle *tmpPart = new(Particle);
+        tmpPart->x = 10;
+        tmpPart->y = 10;
+        tmpPart->z = 30;
+        tmpPart->angX = 0.05;
+        tmpPart->angY = 0.05;
+        tmpPart->angZ = -0.03;
+        add(tmpPart);
 
-    tmpPart = new(Particle);
-    tmpPart->x = 100;
-    tmpPart->y = 0;
-    tmpPart->z = 0;
-    tmpPart->angX = 0.0;
-    tmpPart->angY = -0.03;
-    tmpPart->angZ = 0.0;
-    tmpPart->mass = 100;
-    tmpPart->next = 0;
-    add(tmpPart);
+        tmpPart = new(Particle);
+        tmpPart->x = 100;
+        tmpPart->y = 0;
+        tmpPart->z = 0;
+        tmpPart->angX = 0.0;
+        tmpPart->angY = -0.03;
+        tmpPart->angZ = 0.0;
+        tmpPart->mass = 100;
+        tmpPart->next = 0;
+        add(tmpPart);
 
-    maxMass = 100;
+        maxMass = 100;
+    }
+    if(preset == 1)
+    {
+        particle->mass = 100;
+        particleCount = 1;
+
+        Particle *tmpPart = new(Particle);
+        tmpPart->x = 20;
+        tmpPart->y = 20;
+        tmpPart->z = 0;
+        tmpPart->angX = 0.05;
+        tmpPart->angY = 0.05;
+        tmpPart->angZ = 0.0;
+        add(tmpPart);
+
+        tmpPart = new(Particle);
+        tmpPart->x = -50;
+        tmpPart->y = 0;
+        tmpPart->z = 0;
+        tmpPart->angX = 0.0;
+        tmpPart->angY = 0.05;
+        tmpPart->angZ = 0.0;
+        tmpPart->mass = 100;
+        tmpPart->next = 0;
+        add(tmpPart);
+
+        maxMass = 100;
+    }
 }
 
 int Gravity::partNum(){
@@ -76,6 +109,18 @@ void Gravity::remove(Particle *part){
     particleCount--;
 }
 
+void Gravity::removeList(){
+    particleCount = 0;
+    Particle *tmp = particle;
+    Particle *next = particle;
+    while(tmp != NULL)
+    {
+        next = tmp->next;
+        delete tmp;
+        tmp = next;
+    }
+}
+
 void Gravity::update(){
     float acceleration, speed;
     float diffX, diffY, diffZ, length; // velocity vector. God help us.
@@ -97,7 +142,7 @@ void Gravity::update(){
                 distance += pow(tmpPart1->y - tmpPart2->y, 2);
                 distance += pow(tmpPart1->z - tmpPart2->z, 2);
                 distance = sqrt(distance);
-                acceleration = 0.2 * (tmpPart1->mass)/(distance*distance);
+                acceleration = GRAVITY_CONST * (tmpPart1->mass)/(distance*distance);
                 speed = acceleration / 60.0; // multiple by time for speed.
                 // Compute velocity vector
                 diffX = tmpPart1->x - tmpPart2->x;
@@ -198,4 +243,8 @@ float Gravity::color(int pos){
     for(int i = 0; i < pos; i++)
         part = part->next;
     return part->mass / maxMass;
+}
+
+Gravity::~Gravity(){
+    removeList();
 }

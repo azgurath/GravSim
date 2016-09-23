@@ -6,9 +6,11 @@
 class Gravity
 {
 public:
-    Gravity();
+    Gravity(int preset);
+    ~Gravity();
 
     void remove(Particle *part);
+    void removeList();
     void update();
     void add(Particle *part);
     int partNum();
