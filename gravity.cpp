@@ -34,6 +34,17 @@ Gravity::Gravity(int preset){
         tmpPart->next = 0;
         add(tmpPart);
 
+        tmpPart = new(Particle);
+        tmpPart->x = 80;
+        tmpPart->y = 10;
+        tmpPart->z = 0;
+        tmpPart->angX = 0.03;
+        tmpPart->angY = -0.015;
+        tmpPart->angZ = 0.0;
+        tmpPart->mass = 1;
+        tmpPart->next = 0;
+        add(tmpPart);
+
         maxMass = 100;
     }
     if(preset == 1)
@@ -188,7 +199,9 @@ void Gravity::update(){
                 }
             }
             // move to next particle
-            tmpPart2 = tmpPart2->next;
+            // Might be null if we deleted last particle in a collision
+            if(tmpPart2 != NULL)
+                tmpPart2 = tmpPart2->next;
         }
         // Move the particle according to it's final velocity vector,
         //     after being updated by the gravity of all other particles.
@@ -196,6 +209,7 @@ void Gravity::update(){
         tmpPart1->y += tmpPart1->angY;
         tmpPart1->z += tmpPart1->angZ;
         // move to next particle
+        // qDebug() << tmpPart1 << tmpPart1->next;
         tmpPart1 = tmpPart1->next;
     }
 }
