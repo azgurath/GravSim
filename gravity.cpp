@@ -20,6 +20,7 @@ Gravity::Gravity(int preset){
         tmpPart->angX = 0.05;
         tmpPart->angY = 0.05;
         tmpPart->angZ = -0.03;
+        tmpPart->mass = 1;
         add(tmpPart);
 
         tmpPart = new(Particle);
@@ -29,7 +30,7 @@ Gravity::Gravity(int preset){
         tmpPart->angX = 0.0;
         tmpPart->angY = -0.03;
         tmpPart->angZ = 0.0;
-        tmpPart->mass = 100;
+        tmpPart->mass = 10;
         tmpPart->next = 0;
         add(tmpPart);
 
