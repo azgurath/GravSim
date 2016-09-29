@@ -67,13 +67,6 @@ void GLWidget::paintGL(){
                 glColor3f(0, 1, 0);
             if(gravity->color(i) < 0.02)
                 glColor3f(0, 0, 1);
-            /*if(gravity->color(i) > 0.1)
-                glColor3f(1.0*gravity->color(i), 0, 0);
-            else
-                if(gravity->color(i) > 0.001)
-                    glColor3f(0, 100*gravity->color(i), 0);
-                else
-                    glColor3f(0, 0, 10000*gravity->color(i));*/
 
             glPushMatrix();
                 glTranslatef(x+gravity->x(i), y+gravity->y(i), zoom+gravity->z(i));
