@@ -1,13 +1,31 @@
+/**
+  * @file gravity.cpp
+  * @author Andrew Hoover
+  * @date 9/29/2016
+  * @brief Implmentation of Gravity class.
+  *
+  * Implementation of Gravity class. Includes functions
+  * to manage linked list of particles, move particles
+  * based on gravity, and create and destroy the environment.
+  */
 #include <math.h>
 #include <QDebug>
 #include "gravity.h"
 
 extern bool REMOVE;
-extern float GRAVITY_CONST;
+extern float GRAVITY_FORCE;
 
+/**
+ * Constructor.
+ *
+ * @brief Gravity::Gravity
+ * @param preset number to use to create particles
+ */
 Gravity::Gravity(int preset){
     particle = new(Particle);
 
+    // Create a series of particles based on the preset value chosen.
+    // Add them to the linked list.
     if(preset == 2)
     {
         particle->mass = 100;
@@ -76,9 +94,23 @@ Gravity::Gravity(int preset){
     }
 }
 
+/**
+ * Length of linked list
+ *
+ * @brief Gravity::partNum
+ * @return length of linked list
+ */
+
 int Gravity::partNum(){
     return particleCount;
 }
+
+/**
+ * Add new particle to linked list.
+ *
+ * @brief Gravity::add
+ * @param part Pointer to new particle to add.
+ */
 
 void Gravity::add(Particle *part){
     Particle *tmp = particle;
@@ -90,6 +122,13 @@ void Gravity::add(Particle *part){
     part->next = NULL;
     particleCount++;
 }
+
+/**
+ * Delete given particle from linked list.
+ *
+ * @brief Gravity::remove
+ * @param part Pointer to particle to remove.
+ */
 
 void Gravity::remove(Particle *part){
     Particle *prev = NULL;
@@ -121,6 +160,12 @@ void Gravity::remove(Particle *part){
     particleCount--;
 }
 
+/**
+ * Delete every node in linked list. Use to avoid memory leaks.
+ *
+ * @brief Gravity::removeList
+ */
+
 void Gravity::removeList(){
     particleCount = 0;
     Particle *tmp = particle;
@@ -133,9 +178,15 @@ void Gravity::removeList(){
     }
 }
 
+/**
+ * Move particles based on velocity and gravity.
+ *
+ * @brief Gravity::update
+ */
+
 void Gravity::update(){
     float acceleration, speed;
-    float diffX, diffY, diffZ, length; // velocity vector. God help us.
+    float diffX, diffY, diffZ, length; // velocity vector.
     float distance;
     // Walk through all particles
     Particle *tmpPart1 = particle;
@@ -154,7 +205,7 @@ void Gravity::update(){
                 distance += pow(tmpPart1->y - tmpPart2->y, 2);
                 distance += pow(tmpPart1->z - tmpPart2->z, 2);
                 distance = sqrt(distance);
-                acceleration = GRAVITY_CONST * (tmpPart1->mass)/(distance*distance);
+                acceleration = GRAVITY_FORCE * (tmpPart1->mass)/(distance*distance);
                 speed = acceleration / 60.0; // multiple by time for speed.
                 // Compute velocity vector
                 diffX = tmpPart1->x - tmpPart2->x;
@@ -214,6 +265,15 @@ void Gravity::update(){
     }
 }
 
+
+/**
+ * Collide two particles, the smaller is deleted and the larger
+ * updated in mass and velocity based on the collision.
+ *
+ * @brief Gravity::collide
+ * @param part1 Lighter particle in collision.
+ * @param part2 Heavier particle in collision.
+ */
 void Gravity::collide(Particle *part1, Particle *part2){
     // Compute how much it's velocity changes
     float newX = part1->mass * part1->angX;
@@ -232,12 +292,28 @@ void Gravity::collide(Particle *part1, Particle *part2){
     part2->mass += part1->mass;
 }
 
+/**
+ * X location of particle at location pos in the linked list.
+ *
+ * @brief Gravity::x
+ * @param pos Position in the linked list.
+ * @return
+ */
+
 float Gravity::x(int pos){
     Particle *part = particle;
     for(int i = 0; i < pos; i++)
         part = part->next;
     return part->x;
 }
+
+/**
+ * Y location of particle at location pos in the linked list.
+ *
+ * @brief Gravity::y
+ * @param pos Position in the linked list.
+ * @return
+ */
 
 float Gravity::y(int pos){
     Particle *part = particle;
@@ -246,6 +322,14 @@ float Gravity::y(int pos){
     return part->y;
 }
 
+/**
+ * Z location of particle at location pos in the linked list.
+ *
+ * @brief Gravity::z
+ * @param pos Position in the linked list.
+ * @return
+ */
+
 float Gravity::z(int pos){
     Particle *part = particle;
     for(int i = 0; i < pos; i++)
@@ -253,12 +337,28 @@ float Gravity::z(int pos){
     return part->z;
 }
 
+/**
+ * Color to draw the particle at location pos in the linked list.
+ *
+ * @brief Gravity::color
+ * @param pos Position in the linked list.
+ * @return color to draw particle.
+ */
+
 float Gravity::color(int pos){
+    // Return the percentage of mass compared to the heaviest particle
+    // to determine which color to draw the particle as.
     Particle *part = particle;
     for(int i = 0; i < pos; i++)
         part = part->next;
     return part->mass / maxMass;
 }
+
+/**
+ * Deconstructor, cleans up the linked list without leaking memory.
+ *
+ * @brief Gravity::~Gravity
+ */
 
 Gravity::~Gravity(){
     removeList();
